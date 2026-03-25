@@ -1,16 +1,19 @@
 import { useRef } from 'react';
 import { useBoardStore } from '../store/boardStore';
 import { pushUndo } from '../lib/undo';
+import { emit } from '../lib/events';
 
 export function useDrag(id: string) {
   const updateItem = useBoardStore((s) => s.updateItem);
   const wasDragging = useRef(false);
+  const screenDistancePx = useRef(0);
 
   function onPointerDown(e: React.PointerEvent<HTMLElement>) {
     if (e.button !== 0) return;
     e.stopPropagation();
 
     wasDragging.current = false;
+    screenDistancePx.current = 0;
     const startX = e.clientX;
     const startY = e.clientY;
 
@@ -32,6 +35,7 @@ export function useDrag(id: string) {
       const zoom = useBoardStore.getState().viewport.zoom;
       const dx = (ev.clientX - startX) / zoom;
       const dy = (ev.clientY - startY) / zoom;
+      screenDistancePx.current = Math.hypot(ev.clientX - startX, ev.clientY - startY);
       if (!wasDragging.current && Math.hypot(dx, dy) > 4) {
         wasDragging.current = true;
       }
@@ -48,6 +52,9 @@ export function useDrag(id: string) {
       target.removeEventListener('pointerup', onUp);
       target.releasePointerCapture(e.pointerId);
       if (wasDragging.current) {
+        if (screenDistancePx.current >= 40) {
+          emit('ITEM_MOVED');
+        }
         pushUndo({
           description: dragIds.length > 1 ? 'Items moved' : 'Item moved',
           restore: () => {

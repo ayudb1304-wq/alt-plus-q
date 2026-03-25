@@ -5,6 +5,7 @@ import { getBoardState, setBoardState } from '../lib/storage';
 import { isEditorEmpty } from '../lib/tiptap';
 import { findFreePosition } from '../lib/placement';
 import { pushUndo } from '../lib/undo';
+import { emit } from '../lib/events';
 
 interface BoardStore {
   items: CanvasItem[];
@@ -64,6 +65,7 @@ export const useBoardStore = create<BoardStore>()(
 
     addItem: (item) => {
       set((s) => ({ items: [item, ...s.items] }));
+      emit('ITEM_CREATED');
     },
 
     updateItem: (id, patch) => {

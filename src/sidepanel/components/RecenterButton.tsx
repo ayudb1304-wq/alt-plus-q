@@ -57,6 +57,7 @@ export default function RecenterButton({
     <button
       onClick={handleRecenter}
       title="Recenter view"
+      data-onboarding-target="recenter"
       style={{
         position: 'absolute',
         bottom: 48,

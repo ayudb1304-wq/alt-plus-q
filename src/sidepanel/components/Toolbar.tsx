@@ -4,6 +4,7 @@ import ShortcutsModal from './ShortcutsModal';
 import { getFaviconUrl } from '../lib/favicon';
 import { findFreePosition } from '../lib/viewport';
 import { triggerFlash } from '../lib/flash';
+import { emit } from '../lib/events';
 import type { CanvasItem } from '../../types/board';
 
 function isRestrictedUrl(url: string) {
@@ -52,6 +53,8 @@ export default function Toolbar() {
 
   function handleAddTab() {
     if (tabDisabled || !currentTab) return;
+    // Emit before addItem so the step advances before ITEM_CREATED fires
+    emit('ADD_TAB_CLICKED');
     const id = crypto.randomUUID();
     const item: CanvasItem = {
       id,
@@ -111,6 +114,7 @@ export default function Toolbar() {
           onClick={handleAddTab}
           disabled={tabDisabled}
           title={tabDisabled ? 'Cannot add this page' : 'Add current tab to board'}
+          data-onboarding-target="add-tab"
           style={{
             height: 28,
             padding: '0 10px',

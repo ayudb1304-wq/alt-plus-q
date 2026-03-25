@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { useBoardStore } from '../store/boardStore';
+import { useOnboardingStore } from '../store/onboardingStore';
 
 export default function EmptyState() {
   const items = useBoardStore((s) => s.items);
+  const onboardingDismissed = useOnboardingStore((s) => s.dismissed);
+  const onboardingHydrated = useOnboardingStore((s) => s.isHydrated);
   const [visible, setVisible] = useState(true);
   const hasEverHadItems = useRef(false);
   const prevItemCount = useRef(0);
@@ -24,6 +27,9 @@ export default function EmptyState() {
 
     prevItemCount.current = count;
   }, [items]);
+
+  // Onboarding IS the empty-state teacher — hide until tutorial is done or skipped
+  if (onboardingHydrated && !onboardingDismissed) return null;
 
   if (!visible) return null;
 
