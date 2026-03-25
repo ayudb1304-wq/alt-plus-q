@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Alt+Q",
+  "version": "0.1.0",
+  "description": "A spatial canvas for your browser. Drop links, text, and snippets anywhere — no cards, no containers.",
+  "permissions": [
+    "storage",
+    "contextMenus",
+    "tabs",
+    "sidePanel",
+    "clipboardRead"
+  ],
+  "action": {},
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Q"
+      },
+      "description": "Toggle Alt+Q board"
+    }
+  },
+  "side_panel": {
+    "default_path": "src/sidepanel/sidepanel.html"
+  },
+  "background": {
+    "service_worker": "src/background/background.ts",
+    "type": "module"
+  }
+}
